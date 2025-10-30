@@ -1,0 +1,18 @@
+- name: Manutenção Windows
+  hosts: windows_servers
+  gather_facts: yes
+
+  tasks:
+    - name: Verificar espaço em disco
+      win_shell: |
+        Get-PSDrive -PSProvider FileSystem | Select-Object Name, @{Name="UsedGB";Expression={[math]::Round($_.Used/1GB,2)}}, @{Name="FreeGB";Expression={[math]::Round($_.Free/1GB,2)}}
+      register: disk_space
+
+    - name: Exibir espaço
+      debug:
+        var: disk_space.stdout_lines
+
+    - name: Limpar temporários
+      win_shell: |
+        Remove-Item -Path $env:TEMP\* -Recurse -Force -ErrorAction SilentlyContinue
+      ignore_errors: yes

@@ -1,0 +1,27 @@
+- name: Backup de servidores Linux
+  hosts: linux_servers
+  become: yes
+  gather_facts: yes
+
+  vars:
+    backup_timestamp: "{{ ansible_date_time.date }}_{{ ansible_date_time.hour }}{{ ansible_date_time.minute }}"
+    backup_destination: "{{ backup_dir }}/{{ inventory_hostname }}_{{ backup_timestamp }}.tar.gz"
+
+  tasks:
+    - name: Criar diretório de backup
+      file:
+        path: "{{ backup_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Fazer backup de /etc
+      archive:
+        path: /etc
+        dest: "{{ backup_destination }}"
+        format: gz
+      register: backup_result
+
+    - name: Exibir resultado
+      debug:
+        msg: "Backup criado em {{ backup_destination }}"
+      when: backup_result is succeeded

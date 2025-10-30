@@ -1,0 +1,14 @@
+# Variáveis globais
+timezone: America/Sao_Paulo
+backup_dir: /backup
+admin_email: admin@dressto.com.br
+
+dns_servers:
+  - 8.8.8.8
+  - 8.8.4.4
+
+common_packages:
+  - vim
+  - curl
+  - wget
+  - htop
